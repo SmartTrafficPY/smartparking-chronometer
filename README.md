@@ -2,7 +2,7 @@
     <a href="http://smarttraffic.com.py"><img src="https://github.com/SmartTrafficPY/smartparking/blob/master/header-smartTraffic.png"        title="SmartTraffic" alt="SmartTraffic"></a>
 </p>
 
-# SmartParking: facilitating the search for parking places.
+# Smartparking-Chronometer: complementary tool to validate [SmartParking.](https://github.com/SmartTrafficPY/smartparking)
 
 <p align="center">
   <a href="https://www.smarttraffic.com.py/SmartParking/"><img  src="https://github.com/SmartTrafficPY/smartparking/blob/master/Smartparking.png" title="SmartParking" alt="SmartParking"></a>
@@ -26,7 +26,7 @@ At the time, our server is still in develop, like this application
 
 ### Clone
 
-- Clone this repo to your local machine using `https://github.com/SmartTrafficPY/smartparking.git`
+- Clone this repo to your local machine using `https://github.com/SmartTrafficPY/smartparking-chronometer.git`
 
 ### Setup
 
@@ -35,7 +35,6 @@ At the time, our server is still in develop, like this application
 ---
 
 ## Features
-- Map with information of the availability of parking places
 - Has a proximity monitoring module
 - Manage parking spots and places
 - User adminitration with session based authentication
@@ -58,7 +57,7 @@ All the documentation we have on this proyect is on the [SmartTraffic project pa
     - 🍴 Fork this repo!
 
 - **Option 2**
-    - 👯 Clone this repo to your local machine using `https://github.com/SmartTrafficPY/smartparking.git`
+    - 👯 Clone this repo to your local machine using `https://github.com/SmartTrafficPY/smartparking-chronometer.git`
 
 ### Step 2
 
