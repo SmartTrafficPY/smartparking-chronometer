@@ -45,7 +45,7 @@ public class Constants {
     public static final String USER_ID = "USER_ID";
     public static final String USER_URL = "USER_URL";
     public static final String USERNAME = "USERNAME";
-    public static final int APPLICATION_ID = 1;
+    public static final int APPLICATION_ID = 3;
     public static final String GEOFENCE_TRIGGED = "GEOFENCE_TRIGGED";
     public static final String EVENT_BASIC = "entities/smartparking/event_types/";
     public static final String GATEWAYS = "GATEWAYS";
