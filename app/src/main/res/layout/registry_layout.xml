@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="50dp"
             android:layout_gravity="center"
-            android:src="@mipmap/smart_parking_logo" />
+            android:src="@mipmap/bifurcation_icon_round"/>
 
         <TextView
             android:id="@+id/credencialesTextView"

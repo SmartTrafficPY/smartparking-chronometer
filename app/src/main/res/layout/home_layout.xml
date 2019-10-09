@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Toolbar -->
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar"
@@ -26,27 +25,18 @@
 
     </android.support.v7.widget.Toolbar>
 
-
+    <Chronometer
+        android:id="@+id/timeCronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:layout_gravity="center_vertical |center_horizontal"
+        android:textSize="50dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <org.osmdroid.views.MapView
-            android:id="@+id/mapFragment"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"/>
-
-        <ImageButton android:id="@+id/buttonRecenter"
-            android:background="@drawable/btn_rectangle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/to_location"
-            android:layout_alignParentBottom="true"
-            android:adjustViewBounds="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="25dp">
-        </ImageButton>
 
         <ImageButton android:id="@+id/buttonAbout"
             android:layout_width="50dp"
@@ -55,7 +45,7 @@
             android:background="@drawable/btn_rectangle"
             android:adjustViewBounds="true"
             android:layout_marginBottom="15dp"
-            android:layout_above="@+id/buttonRecenter"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true">
         </ImageButton>
 

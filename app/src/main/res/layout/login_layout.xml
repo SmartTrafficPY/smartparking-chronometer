@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="274dp"
             android:src="@mipmap/smart_parking_logo"
-            tools:srcCompat="@mipmap/smart_parking_logo" />
+            tools:srcCompat="@mipmap/bifurcation_icon_round" />
 
         <TextView
             android:id="@+id/usernameTextView"

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SmartParking</string>
+    <string name="app_name">SmartParking:Chronometer</string>
     <string name="register">Ya tenés una cuenta? Iniciar sesión</string>
     <string name="loginButton">Login</string>
     <string name="toLoginButton">Tengo cuenta</string>
@@ -52,8 +52,7 @@
     <string name="free_spot_meaning">Este color indica un lugar LIBRE</string>
     <string name="occupied_spot_meaning">Este color indica un lugar OCUPADO</string>
     <string name="unknown_spot_meaning">Este color indica un lugar DESCONOCIDO</string>
-    <string name="not_login_message">Accede a un mapa con información sobre la disponibilidad
-        de lugares de estacionamiento.</string>
+    <string name="not_login_message">Esta es la herramienta complementaria a SmartParking, sin la ayuda del mapa.</string>
     <string name="id_key">identificador</string>
     <string name="preference_file_key">ProfileSharedPreferencesPrivateData</string>
     <string name="terms_conditions">Acepto los <u>términos y condiciones</u>.</string>
