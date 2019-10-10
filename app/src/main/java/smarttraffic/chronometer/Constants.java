@@ -18,6 +18,7 @@ public class Constants {
         // Persistence Constructor
     }
 
+    public static final String CONNECTION_FAILED = "No hay conexión con el servidor!";
     public static final String PARKING_COUNTER = "PARKING_COUNTER";
     public static final int ADD_ALARM_REQUEST_CODE=130;
     public static final int REMOVE_ALARM_REQUEST_CODE=131;

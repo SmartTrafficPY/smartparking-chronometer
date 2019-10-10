@@ -52,7 +52,6 @@ public class LoginActivity extends Activity {
             public void onClick(View v) {
                 if(checkCredentialsInput()){
                     makeLoginHappen();
-                    // function that makes the makeLoginHappen process...
                 }
             }
         });

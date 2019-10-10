@@ -223,10 +223,13 @@ public class HomeActivity extends AppCompatActivity {
                     Utils.hasEnterLotFlag(this, false);
                     Utils.setEntranceEvent(this, mCurrentLocation, Constants.EVENT_TYPE_EXIT);
                 }
+                chronometer.stop();
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 handler.removeCallbacks(cronJob);
                 break;
             default:
+                chronometer.stop();
+                chronometer.setBase(SystemClock.elapsedRealtime());
                 removeActivityUpdates();
                 handler.removeCallbacks(cronJob);
                 break;
@@ -285,6 +288,9 @@ public class HomeActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<SpotList> call, Throwable t) {
+                if(!Utils.isInternetAvailable()){
+                    Utils.showToast(Constants.CONNECTION_FAILED, HomeActivity.this);
+                }
                 t.printStackTrace();
             }
         });
@@ -344,6 +350,9 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<HashMap<String, String>> call, Throwable t) {
+                if(!Utils.isInternetAvailable()){
+                    Utils.showToast(Constants.CONNECTION_FAILED, HomeActivity.this);
+                }
                 t.printStackTrace();
             }
         });
@@ -441,7 +450,9 @@ public class HomeActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<LotList> call, Throwable t) {
-                Log.i("Home",t.toString());
+                if(!Utils.isInternetAvailable()){
+                    Utils.showToast(Constants.CONNECTION_FAILED, HomeActivity.this);
+                }
                 t.printStackTrace();
             }
         });
@@ -460,7 +471,7 @@ public class HomeActivity extends AppCompatActivity {
                         longitud,
                         radius
                 )
-                .setLoiteringDelay(1000 * 60 * 25)
+                .setLoiteringDelay(1000 * 60 * 20)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                         Geofence.GEOFENCE_TRANSITION_EXIT |
                         Geofence.GEOFENCE_TRANSITION_DWELL);
@@ -724,6 +735,8 @@ public class HomeActivity extends AppCompatActivity {
                             LocationUpdatesService.class);
                     stopService(serviceIntent);
                     userNotResponse = false;
+                    chronometer.stop();
+                    chronometer.setBase(SystemClock.elapsedRealtime());
                 }
             });
             freeBuilder.setNeutralButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -881,21 +894,6 @@ public class HomeActivity extends AppCompatActivity {
             messageDialogReport();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void requestStoragePermission() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                return;
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                return;
-            }
-        }
-        else {
-            return;
-        }
     }
 
     public void messageDialogReport(){

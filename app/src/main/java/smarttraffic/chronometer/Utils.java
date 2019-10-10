@@ -23,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import org.osmdroid.util.GeoPoint;
 
 import java.lang.reflect.Type;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -448,4 +449,17 @@ public class Utils {
                 Constants.GEOFENCES_TRIGGER, new HashSet<String>()));
         return list;
     }
+
+    public static boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            //You can replace it with your name
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 }
