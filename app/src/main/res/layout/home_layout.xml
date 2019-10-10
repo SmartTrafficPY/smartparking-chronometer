@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/home_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:layout_gravity="center"
+        app:popupTheme="@style/AppTheme.SmartParking">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/action_bar_icon"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <Chronometer
+        android:id="@+id/timeCronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:layout_gravity="center_vertical |center_horizontal"
+        android:textSize="50dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageButton android:id="@+id/buttonAbout"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/about"
+            android:background="@drawable/btn_rectangle"
+            android:adjustViewBounds="true"
+            android:layout_marginBottom="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true">
+        </ImageButton>
+
+    </RelativeLayout>
+
+</LinearLayout>
