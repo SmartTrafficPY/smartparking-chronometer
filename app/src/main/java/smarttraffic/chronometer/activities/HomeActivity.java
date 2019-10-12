@@ -128,6 +128,7 @@ public class HomeActivity extends AppCompatActivity {
     private GeofencingClient geofencingClient;
     private PendingIntent mGeofencePendingIntent;
     final Handler handler = new Handler();
+    Runnable cronJob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,7 +207,7 @@ public class HomeActivity extends AppCompatActivity {
         getSpotsFromGeofence(geofencesTrigger, false);
         final long delay = sharedPreferences.getLong(Constants.MAP_SPOTS_TIME_UPDATE_SETTINGS,
                 Constants.getSecondsInMilliseconds() * 45);
-        Runnable cronJob = new Runnable() {
+        cronJob = new Runnable() {
             public void run() {
                 getSpotsFromGeofence(geofencesTrigger, true);
                 handler.postDelayed(this, delay);
@@ -699,6 +700,16 @@ public class HomeActivity extends AppCompatActivity {
                                 chronometer.setBase(SystemClock.elapsedRealtime());
                             }
                         });
+            ocupationBuilder.setNegativeButton(R.string.not_get_spot_occupied, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Utils.setNewStateOnSpot(HomeActivity.this, false, spotIdIn);
+                    Utils.changeStatusOfSpot(spotIdIn, spots, "F");
+                    userNotResponse = false;
+                    List<String> geofencesToRemove = new ArrayList<>();
+                    geofencesToRemove.add("Tu vehiculo en " + spotIdIn);
+                    geofencingClient.removeGeofences(geofencesToRemove);
+                }
+            });
             ocupationBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         userNotResponse = false;
