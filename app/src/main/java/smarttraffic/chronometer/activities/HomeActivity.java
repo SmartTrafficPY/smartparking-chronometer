@@ -139,10 +139,7 @@ public class HomeActivity extends AppCompatActivity {
         geofencingClient = LocationServices.getGeofencingClient(this);
 
         removeGeofences();
-        Utils.geofencesSetUp(this, false);
         chronometer.setBase(SystemClock.elapsedRealtime());
-
-        Utils.addAlarmsGeofencingTask(HomeActivity.this);
 
         buttonAbout.setOnClickListener(new View.OnClickListener() {
             @Override
