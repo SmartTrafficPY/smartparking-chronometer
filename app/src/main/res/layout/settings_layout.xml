@@ -59,7 +59,7 @@
             <RadioButton
                 android:id="@+id/fastTimeGPS"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:text="Actualización ubicación muy alta(muy alto consumo batería, muy alta precisión): 1-2 sec" />
@@ -67,7 +67,7 @@
             <RadioButton
                 android:id="@+id/normalTimeGPS"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:text="Actualización ubicación normal: 5 sec" />
@@ -75,7 +75,7 @@
             <RadioButton
                 android:id="@+id/slowTimeGPS"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:text="Actualización ubicación baja(bajo consumo batería, baja precisión): 10 sec" />
@@ -85,7 +85,7 @@
         <Button
             android:id="@+id/saveSettings"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="15dp"
             android:layout_alignParentBottom="true"

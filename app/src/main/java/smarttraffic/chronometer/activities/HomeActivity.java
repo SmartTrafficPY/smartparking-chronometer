@@ -141,6 +141,8 @@ public class HomeActivity extends AppCompatActivity {
         removeGeofences();
         chronometer.setBase(SystemClock.elapsedRealtime());
 
+        Utils.addAlarmsGeofencingTask(this);
+
         buttonAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
