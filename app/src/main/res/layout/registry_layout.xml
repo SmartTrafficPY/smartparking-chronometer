@@ -43,7 +43,7 @@
                 <EditText
                     android:id="@+id/usernameSignUp"
                     android:layout_width="275dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:ems="10"
                     android:fontFamily="sans-serif-light"
                     android:hint="username"
@@ -52,12 +52,13 @@
 
                 <ImageButton
                     android:id="@+id/setRandomUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/changepass_menu"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@+id/usernameSignUp"
-                    />
+                    android:background="@drawable/btn_rectangle"
+                    android:contentDescription="@string/randomic_username"
+                    android:src="@drawable/changepass_menu" />
 
         </RelativeLayout>
 
@@ -68,7 +69,7 @@
                 <EditText
                     android:id="@+id/passwordSignUp"
                     android:layout_width="275dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:ems="10"
                     android:hint="password"
                     android:textColorHint="@color/divider"
@@ -76,8 +77,10 @@
 
                 <ImageButton
                     android:id="@+id/passModeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rectangle"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/hide_password"
                     android:src="@drawable/showtext"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@+id/passwordSignUp"
@@ -101,7 +104,7 @@
                 <TextView
                     android:id="@+id/birthDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="44dp"
+                    android:layout_height="48dp"
                     android:layout_below="@+id/ageTextView"
                     android:ems="10"
                     android:textSize="20dp"
@@ -111,8 +114,10 @@
 
                 <ImageButton
                     android:id="@+id/datePickerButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rectangle"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/date_picker"
                     android:layout_below="@+id/ageTextView"
                     android:src="@drawable/datepicker"
                     android:layout_marginLeft="15dp"
@@ -139,15 +144,17 @@
             <RadioButton
                 android:id="@+id/maleRadButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
+                android:textAllCaps="true"
                 android:text="Hombre"/>
 
             <RadioButton
                 android:id="@+id/femaleRadButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
+                android:textAllCaps="true"
                 android:text="Mujer"
                 android:layout_marginBottom="25dp"/>
         </RadioGroup>
@@ -157,7 +164,7 @@
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_marginTop="25dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:textColor="@color/icons"
             android:background="@drawable/btn_rectangle"
             android:shadowColor="@color/cardview_shadow_end_color"

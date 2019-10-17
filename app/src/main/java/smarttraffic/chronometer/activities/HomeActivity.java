@@ -117,6 +117,7 @@ public class HomeActivity extends AppCompatActivity {
     int activityTransition;
     int geofenceTransition;
     int confidence;
+    int delayResponse;
     boolean userNotResponse = true;
     boolean dialogSendAllready = false;
     private Location mCurrentLocation;
@@ -128,6 +129,7 @@ public class HomeActivity extends AppCompatActivity {
     private GeofencingClient geofencingClient;
     private PendingIntent mGeofencePendingIntent;
     final Handler handler = new Handler();
+    Runnable cronJob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,10 +140,9 @@ public class HomeActivity extends AppCompatActivity {
         geofencingClient = LocationServices.getGeofencingClient(this);
 
         removeGeofences();
-        Utils.geofencesSetUp(this, false);
         chronometer.setBase(SystemClock.elapsedRealtime());
 
-        Utils.addAlarmsGeofencingTask(HomeActivity.this);
+        Utils.addAlarmsGeofencingTask(this);
 
         buttonAbout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,7 +207,7 @@ public class HomeActivity extends AppCompatActivity {
         getSpotsFromGeofence(geofencesTrigger, false);
         final long delay = sharedPreferences.getLong(Constants.MAP_SPOTS_TIME_UPDATE_SETTINGS,
                 Constants.getSecondsInMilliseconds() * 45);
-        Runnable cronJob = new Runnable() {
+        cronJob = new Runnable() {
             public void run() {
                 getSpotsFromGeofence(geofencesTrigger, true);
                 handler.postDelayed(this, delay);
@@ -256,7 +257,7 @@ public class HomeActivity extends AppCompatActivity {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new AddGeoJsonInterceptor())
@@ -297,8 +298,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updatesSpotsFromGeofence() {
-        final SharedPreferences preferencesSettings = this.getSharedPreferences(Constants.SETTINGS,
-                MODE_PRIVATE);
         SharedPreferences preferencesTimestamp = this.getSharedPreferences(
                 X_TIMESTAMP,MODE_PRIVATE);
         NearbyLocation nearbyLocation = new NearbyLocation();
@@ -318,7 +317,7 @@ public class HomeActivity extends AppCompatActivity {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new ReceivedTimeStampInterceptor(this))
@@ -411,7 +410,7 @@ public class HomeActivity extends AppCompatActivity {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new AddUserTokenInterceptor(this))
@@ -683,6 +682,7 @@ public class HomeActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
                                 userNotResponse = false;
+                                delayResponse = 60;
                                 final Timer geofencetimer = new Timer();
                                 Utils.changeStatusOfSpot(spotIdIn, spots, "O");
                                 geofencetimer.schedule(new TimerTask() {
@@ -699,9 +699,21 @@ public class HomeActivity extends AppCompatActivity {
                                 chronometer.setBase(SystemClock.elapsedRealtime());
                             }
                         });
+            ocupationBuilder.setNegativeButton(R.string.not_get_spot_occupied, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Utils.setNewStateOnSpot(HomeActivity.this, false, spotIdIn);
+                    Utils.changeStatusOfSpot(spotIdIn, spots, "F");
+                    userNotResponse = false;
+                    delayResponse = 60;
+                    List<String> geofencesToRemove = new ArrayList<>();
+                    geofencesToRemove.add("Tu vehiculo en " + spotIdIn);
+                    geofencingClient.removeGeofences(geofencesToRemove);
+                }
+            });
             ocupationBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         userNotResponse = false;
+                        delayResponse = 10;
                         dialog.dismiss();
                     }
                 });
@@ -715,6 +727,7 @@ public class HomeActivity extends AppCompatActivity {
                         Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
                         Utils.changeStatusOfSpot(spotIdIn, spots, "F");
                         userNotResponse = false;
+                        delayResponse = 60;
                         List<String> geofencesToRemove = new ArrayList<>();
                         geofencesToRemove.add("Tu vehiculo en " + spotIdIn);
                         geofencingClient.removeGeofences(geofencesToRemove);
@@ -735,6 +748,7 @@ public class HomeActivity extends AppCompatActivity {
                             LocationUpdatesService.class);
                     stopService(serviceIntent);
                     userNotResponse = false;
+                    delayResponse = 60;
                     chronometer.stop();
                     chronometer.setBase(SystemClock.elapsedRealtime());
                 }
@@ -743,6 +757,7 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     userNotResponse = false;
+                    delayResponse = 10;
                     dialog.dismiss();
                 }
             });

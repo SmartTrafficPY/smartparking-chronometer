@@ -30,6 +30,7 @@ import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import smarttraffic.chronometer.Constants;
 import smarttraffic.chronometer.R;
 import smarttraffic.chronometer.receivers.RegistrationReceiver;
 import smarttraffic.chronometer.services.RegistrationService;
@@ -180,7 +181,7 @@ public class RegistryActivity extends Activity {
                             signInButton.setEnabled(true);
                             progressDialog.dismiss();
                         }
-                    }, 3000);
+                    }, 5 * Constants.getSecondsInMilliseconds());
         }
     }
 

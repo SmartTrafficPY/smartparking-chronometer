@@ -178,8 +178,6 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
     public void startLocationService(List<Geofence> triggeringGeofences) {
         Intent serviceIntent = new Intent(this, LocationUpdatesService.class);
         Utils.saveGeofencesTrigger(this,namesOfGeofencesTrigger(triggeringGeofences));
-//        serviceIntent.putStringArrayListExtra(Constants.GEOFENCE_TRIGGED,
-//                namesOfGeofencesTrigger(triggeringGeofences));
         startService(serviceIntent);
     }
 

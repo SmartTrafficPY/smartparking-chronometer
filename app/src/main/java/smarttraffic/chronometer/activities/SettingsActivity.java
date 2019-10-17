@@ -36,23 +36,6 @@ public class SettingsActivity extends Activity {
     RadioButton slowTimeGPS;
     @BindView(R.id.gpsActualizationsTime)
     RadioGroup gpsActualizationsTime;
-    //Time updates on Maps...
-    @BindView(R.id.fastUpdateRequest)
-    RadioButton fastUpdateRequest;
-    @BindView(R.id.normalUpdateRequest)
-    RadioButton normalUpdateRequest;
-    @BindView(R.id.slowUpdateRequest)
-    RadioButton slowUpdateRequest;
-    @BindView(R.id.requestActualizationsTime)
-    RadioGroup requestActualizationsTime;
-
-    @BindView(R.id.pointsDraw)
-    RadioButton pointsDraw;
-    @BindView(R.id.polygonDraw)
-    RadioButton polygonDraw;
-    @BindView(R.id.drawGroup)
-    RadioGroup drawGroup;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,9 +64,6 @@ public class SettingsActivity extends Activity {
 
     private HashMap<String, String> saveAllNewSettings(SharedPreferences.Editor editor) {
         editor.putLong(Constants.LOCATION_TIME_UPDATE_SETTINGS, onRadioLocationClicked()).apply();
-        editor.putLong(Constants.MAP_SPOTS_TIME_UPDATE_SETTINGS, onRadioMapUpdateClicked()).apply();
-        editor.putString(Constants.DRAW_SETTINGS,
-                String.valueOf(onRadioDrawClicked())).apply();
         editor.commit();
         return returnNewSettings();
     }
@@ -91,15 +71,11 @@ public class SettingsActivity extends Activity {
     private HashMap<String, String> returnNewSettings() {
         HashMap<String,String> newSettings = new HashMap<>();
         newSettings.put(Constants.LOCATION_TIME_UPDATE_SETTINGS, String.valueOf(onRadioLocationClicked()));
-        newSettings.put(Constants.MAP_SPOTS_TIME_UPDATE_SETTINGS, String.valueOf(onRadioMapUpdateClicked()));
-        newSettings.put(Constants.DRAW_SETTINGS, String.valueOf(onRadioDrawClicked()));
         return  newSettings;
     }
 
     private void checkValuesFromSettingsOptions(HashMap<String, String> settings) {
         checkForLocationUpdate(settings);
-        checkForMapsUpdate(settings);
-        checkForDrawOption(settings);
     }
 
     private HashMap<String, String> setSettingInfo(SharedPreferences sharedPreferences) {
@@ -144,24 +120,6 @@ public class SettingsActivity extends Activity {
         }
     }
 
-    public Long onRadioMapUpdateClicked() {
-        if(fastUpdateRequest.isChecked()){
-            return Constants.getSecondsInMilliseconds() * 30;
-        }else if(slowUpdateRequest.isChecked()){
-            return Constants.getMinutesInMilliseconds();
-        }else{
-            return Constants.getSecondsInMilliseconds() * 45;
-        }
-    }
-
-    public String onRadioDrawClicked() {
-        if(pointsDraw.isChecked()){
-            return Constants.POINT_TO_DRAW_SETTINGS;
-        }else{
-            return Constants.POLYGON_TO_DRAW_SETTINGS;
-        }
-    }
-
     private void checkForLocationUpdate(HashMap<String, String> settings){
         if(settings.get(Constants.LOCATION_TIME_UPDATE_SETTINGS) != null){
             if(Long.valueOf(settings.get(Constants.LOCATION_TIME_UPDATE_SETTINGS)) ==
@@ -178,31 +136,6 @@ public class SettingsActivity extends Activity {
             }
         }
 
-    }
-
-    private void checkForMapsUpdate(HashMap<String, String> settings){
-        if(settings.get(Constants.MAP_SPOTS_TIME_UPDATE_SETTINGS) != null){
-            if(Long.valueOf(settings.get(Constants.MAP_SPOTS_TIME_UPDATE_SETTINGS)) ==
-                    Constants.getSecondsInMilliseconds() * 30){
-                requestActualizationsTime.check(R.id.fastUpdateRequest);
-            }else if(Long.valueOf(settings.get(Constants.MAP_SPOTS_TIME_UPDATE_SETTINGS)) ==
-                    Constants.getSecondsInMilliseconds() * 45){
-                requestActualizationsTime.check(R.id.normalUpdateRequest);
-            }else{
-                requestActualizationsTime.check(R.id.slowUpdateRequest);
-            }
-        }
-    }
-
-    private void checkForDrawOption(HashMap<String, String> settings){
-        if(settings.get(Constants.DRAW_SETTINGS) != null){
-            if(settings.get(Constants.DRAW_SETTINGS).equals(
-                    Constants.POLYGON_TO_DRAW_SETTINGS)){
-                drawGroup.check(R.id.polygonDraw);
-            }else{
-                drawGroup.check(R.id.pointsDraw);
-            }
-        }
     }
 
 }
