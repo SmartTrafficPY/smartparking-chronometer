@@ -297,8 +297,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updatesSpotsFromGeofence() {
-        final SharedPreferences preferencesSettings = this.getSharedPreferences(Constants.SETTINGS,
-                MODE_PRIVATE);
         SharedPreferences preferencesTimestamp = this.getSharedPreferences(
                 X_TIMESTAMP,MODE_PRIVATE);
         NearbyLocation nearbyLocation = new NearbyLocation();
