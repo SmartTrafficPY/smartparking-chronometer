@@ -117,6 +117,7 @@ public class HomeActivity extends AppCompatActivity {
     int activityTransition;
     int geofenceTransition;
     int confidence;
+    int delayResponse;
     boolean userNotResponse = true;
     boolean dialogSendAllready = false;
     private Location mCurrentLocation;
@@ -681,6 +682,7 @@ public class HomeActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
                                 userNotResponse = false;
+                                delayResponse = 60;
                                 final Timer geofencetimer = new Timer();
                                 Utils.changeStatusOfSpot(spotIdIn, spots, "O");
                                 geofencetimer.schedule(new TimerTask() {
@@ -702,6 +704,7 @@ public class HomeActivity extends AppCompatActivity {
                     Utils.setNewStateOnSpot(HomeActivity.this, false, spotIdIn);
                     Utils.changeStatusOfSpot(spotIdIn, spots, "F");
                     userNotResponse = false;
+                    delayResponse = 60;
                     List<String> geofencesToRemove = new ArrayList<>();
                     geofencesToRemove.add("Tu vehiculo en " + spotIdIn);
                     geofencingClient.removeGeofences(geofencesToRemove);
@@ -710,6 +713,7 @@ public class HomeActivity extends AppCompatActivity {
             ocupationBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         userNotResponse = false;
+                        delayResponse = 10;
                         dialog.dismiss();
                     }
                 });
@@ -723,6 +727,7 @@ public class HomeActivity extends AppCompatActivity {
                         Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
                         Utils.changeStatusOfSpot(spotIdIn, spots, "F");
                         userNotResponse = false;
+                        delayResponse = 60;
                         List<String> geofencesToRemove = new ArrayList<>();
                         geofencesToRemove.add("Tu vehiculo en " + spotIdIn);
                         geofencingClient.removeGeofences(geofencesToRemove);
@@ -743,6 +748,7 @@ public class HomeActivity extends AppCompatActivity {
                             LocationUpdatesService.class);
                     stopService(serviceIntent);
                     userNotResponse = false;
+                    delayResponse = 60;
                     chronometer.stop();
                     chronometer.setBase(SystemClock.elapsedRealtime());
                 }
@@ -751,6 +757,7 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     userNotResponse = false;
+                    delayResponse = 10;
                     dialog.dismiss();
                 }
             });
