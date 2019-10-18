@@ -125,6 +125,11 @@ public class LoginActivity extends Activity {
         toast.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     private boolean checkCredentialsInput(){
         if(usernameText.getText().toString() != null){
             return true;
