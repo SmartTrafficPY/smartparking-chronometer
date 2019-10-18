@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import smarttraffic.chronometer.Constants;
 import smarttraffic.chronometer.R;
 import smarttraffic.chronometer.activities.LoginActivity;
 import smarttraffic.chronometer.services.RegistrationService;
@@ -32,17 +33,20 @@ public class RegistrationReceiver extends BroadcastReceiver {
     private String errorMessage;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-
-        if(intent.getAction().equals(RegistrationService.REGISTRATION_OK)) {
+    public void onReceive(final Context context, Intent intent) {
+        if (intent.getAction().equals(RegistrationService.REGISTRATION_OK)) {
             showToast(RegistrationService.REGISTRATION_OK, context);
             Intent i = new Intent(context, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
-        }
-        else if(intent.getAction().equals(RegistrationService.BAD_REGISTRATION)) {
+        }else{
             setErrorMessage(intent.getStringExtra(RegistrationService.PROBLEM));
-            showToast(getErrorMessage(),context);
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            showToast(getErrorMessage(), context);
+                        }
+                    }, 8 * Constants.getSecondsInMilliseconds());
         }
     }
     // Show images in Toast prompt.

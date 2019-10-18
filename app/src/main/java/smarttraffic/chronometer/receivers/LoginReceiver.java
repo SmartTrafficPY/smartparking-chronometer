@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import smarttraffic.chronometer.Constants;
 import smarttraffic.chronometer.R;
 import smarttraffic.chronometer.activities.HomeActivity;
 import smarttraffic.chronometer.services.LoginService;
@@ -26,14 +27,19 @@ public class LoginReceiver extends BroadcastReceiver {
     private Integer identifier;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         if(intent.getAction().equals(LoginService.LOGIN_ACTION)) {
             Intent i = new Intent(context, HomeActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }else{
             setErrorMessage(intent.getStringExtra(LoginService.PROBLEM));
-            showToast(getErrorMessage(),context);
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            showToast(getErrorMessage(), context);
+                        }
+                    }, 8 * Constants.getSecondsInMilliseconds());
         }
     }
 

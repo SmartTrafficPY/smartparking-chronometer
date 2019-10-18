@@ -98,7 +98,7 @@ public class LoginActivity extends Activity {
                         loginButton.setEnabled(true);
                         progressDialog.dismiss();
                     }
-                }, 5 * Constants.getSecondsInMilliseconds());
+                }, 10 * Constants.getSecondsInMilliseconds());
         eraseCredentials();
     }
 
@@ -123,6 +123,11 @@ public class LoginActivity extends Activity {
         imageView.setImageResource(R.mipmap.smartparking_logo_round);
         toastContentView.addView(imageView, 0);
         toast.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     private boolean checkCredentialsInput(){

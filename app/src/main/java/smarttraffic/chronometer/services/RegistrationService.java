@@ -34,7 +34,7 @@ public class RegistrationService extends IntentService {
     public static final String PROBLEM = "Found some Problem in Login";
     private static final String CANNOT_CONNECT_SERVER = "No se pudo conectar con el servidor," +
             " favor revisar conexion!";
-    private static final String ALREADY_EXISTS = "No es válido el nombre de usuario(letras, números, y @/./+/-/_ caracteres) o el perfil ya existe";
+    private static final String ALREADY_EXISTS = "El perfil utilizado ya existe!";
 
     public static final String REGISTRATION_OK = "Registro correcto";
     public static final String BAD_REGISTRATION = "Registro no realizado";
@@ -55,10 +55,9 @@ public class RegistrationService extends IntentService {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
-                //add the token header "Authorization"
                 .addInterceptor(new AddSmartParkingTokenInterceptor())
                 .build();
 
@@ -95,4 +94,6 @@ public class RegistrationService extends IntentService {
         profileRegistry.getSmartParkingProfile().setBirth_date(extras.getString("birth_date"));
         profileRegistry.getSmartParkingProfile().setSex(extras.getString("sex"));
     }
+
+
 }
