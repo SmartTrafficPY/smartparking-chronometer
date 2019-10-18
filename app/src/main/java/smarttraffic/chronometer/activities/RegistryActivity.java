@@ -181,7 +181,7 @@ public class RegistryActivity extends Activity {
                             signInButton.setEnabled(true);
                             progressDialog.dismiss();
                         }
-                    }, 5 * Constants.getSecondsInMilliseconds());
+                    }, 10 * Constants.getSecondsInMilliseconds());
         }
     }
 

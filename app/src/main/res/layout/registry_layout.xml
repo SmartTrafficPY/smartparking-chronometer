@@ -50,6 +50,17 @@
                     android:textColorHint="@color/divider"
                     android:inputType="textPersonName"/>
 
+                <TextView
+                    android:id="@+id/not_spaces_in_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/usernameSignUp"
+                    android:ems="10"
+                    android:textColor="@color/smartparking_red"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/without_spaces"
+                    android:inputType="text"/>
+
                 <ImageButton
                     android:id="@+id/setRandomUser"
                     android:layout_width="48dp"
@@ -72,8 +83,8 @@
                     android:layout_height="48dp"
                     android:ems="10"
                     android:hint="password"
-                    android:textColorHint="@color/divider"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword"
+                    android:textColorHint="@color/divider" />
 
                 <ImageButton
                     android:id="@+id/passModeButton"
