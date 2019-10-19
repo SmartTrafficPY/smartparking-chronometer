@@ -257,8 +257,8 @@ public class HomeActivity extends AppCompatActivity {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new AddGeoJsonInterceptor())
                 .addInterceptor(new AddUserTokenInterceptor(this))
@@ -317,8 +317,8 @@ public class HomeActivity extends AppCompatActivity {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new ReceivedTimeStampInterceptor(this))
                 .addInterceptor(new AddUserTokenInterceptor(this))
@@ -410,8 +410,8 @@ public class HomeActivity extends AppCompatActivity {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new AddUserTokenInterceptor(this))
                 .build();
@@ -544,15 +544,7 @@ public class HomeActivity extends AppCompatActivity {
                         .setAction(R.string.settings, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                // Build intent that displays the App settings screen.
-                                Intent intent = new Intent();
-                                intent.setAction(
-                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package",
-                                        BuildConfig.APPLICATION_ID, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                             }
                         })
                         .show();
@@ -771,7 +763,27 @@ public class HomeActivity extends AppCompatActivity {
             public void run() {
                 alertDialog.dismiss();
                 if(userNotResponse){
-                    Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
+                    if(isParking){
+                        Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
+                        final Timer geofencetimer = new Timer();
+                        Utils.changeStatusOfSpot(spotIdIn, spots, "O");
+                        geofencetimer.schedule(new TimerTask() {
+                            public void run() {
+                                geofencingClient.addGeofences(getGeofenceRequest(
+                                        getSpotFromId(spots, spotIdIn)),
+                                        getGeofencePendingIntent());
+                            }
+                        }, Constants.getMinutesInMilliseconds() * 5);
+                        Intent serviceIntent = new Intent(HomeActivity.this,
+                                LocationUpdatesService.class);
+                        stopService(serviceIntent);
+                    }else{
+                        Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
+                        Utils.changeStatusOfSpot(spotIdIn, spots, "F");
+                        List<String> geofencesToRemove = new ArrayList<>();
+                        geofencesToRemove.add("Tu vehiculo en " + spotIdIn);
+                        geofencingClient.removeGeofences(geofencesToRemove);
+                    }
                 }
                 userNotResponse = true;
             }
@@ -781,7 +793,7 @@ public class HomeActivity extends AppCompatActivity {
                 dialogSendAllready = false;
                 dialogtimer.cancel();
             }
-        }, Constants.getSecondsInMilliseconds() * 30);
+        }, Constants.getSecondsInMilliseconds() * delayResponse);
     }
 
     public boolean isPointInsidePolygon(Spot spot, Location location){
