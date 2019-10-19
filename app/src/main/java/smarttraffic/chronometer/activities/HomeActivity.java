@@ -763,7 +763,27 @@ public class HomeActivity extends AppCompatActivity {
             public void run() {
                 alertDialog.dismiss();
                 if(userNotResponse){
-                    Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
+                    if(isParking){
+                        Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
+                        final Timer geofencetimer = new Timer();
+                        Utils.changeStatusOfSpot(spotIdIn, spots, "O");
+                        geofencetimer.schedule(new TimerTask() {
+                            public void run() {
+                                geofencingClient.addGeofences(getGeofenceRequest(
+                                        getSpotFromId(spots, spotIdIn)),
+                                        getGeofencePendingIntent());
+                            }
+                        }, Constants.getMinutesInMilliseconds() * 5);
+                        Intent serviceIntent = new Intent(HomeActivity.this,
+                                LocationUpdatesService.class);
+                        stopService(serviceIntent);
+                    }else{
+                        Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
+                        Utils.changeStatusOfSpot(spotIdIn, spots, "F");
+                        List<String> geofencesToRemove = new ArrayList<>();
+                        geofencesToRemove.add("Tu vehiculo en " + spotIdIn);
+                        geofencingClient.removeGeofences(geofencesToRemove);
+                    }
                 }
                 userNotResponse = true;
             }
@@ -773,7 +793,7 @@ public class HomeActivity extends AppCompatActivity {
                 dialogSendAllready = false;
                 dialogtimer.cancel();
             }
-        }, Constants.getSecondsInMilliseconds() * 30);
+        }, Constants.getSecondsInMilliseconds() * delayResponse);
     }
 
     public boolean isPointInsidePolygon(Spot spot, Location location){
