@@ -42,6 +42,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import smarttraffic.chronometer.Interceptors.AddUserTokenInterceptor;
+import smarttraffic.chronometer.dataModels.ApplicationInnformation;
 import smarttraffic.chronometer.dataModels.EventProperties;
 import smarttraffic.chronometer.dataModels.Events;
 import smarttraffic.chronometer.dataModels.Lots.Lot;
@@ -104,6 +105,8 @@ public class Utils {
     }
 
     public static void setNewStateOnSpot(final Context context, boolean isParking, int spotId) {
+        ApplicationInnformation app_info = new ApplicationInnformation(Constants.APPLICATION_ID);
+
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -123,7 +126,7 @@ public class Utils {
 
         SmartParkingAPI smartParkingAPI = retrofit.create(SmartParkingAPI.class);
         if(isParking){
-            Call<ResponseBody> call = smartParkingAPI.setOccupiedSpot(spotId);
+            Call<ResponseBody> call = smartParkingAPI.setOccupiedSpot(spotId, app_info);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -143,7 +146,7 @@ public class Utils {
                 }
             });
         }else{
-            Call<ResponseBody> call = smartParkingAPI.resetFreeSpot(spotId);
+            Call<ResponseBody> call = smartParkingAPI.resetFreeSpot(spotId, app_info);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

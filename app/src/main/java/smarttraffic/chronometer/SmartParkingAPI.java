@@ -10,6 +10,7 @@ import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import smarttraffic.chronometer.dataModels.ApplicationInnformation;
 import smarttraffic.chronometer.dataModels.Credentials;
 import smarttraffic.chronometer.dataModels.Events;
 import smarttraffic.chronometer.dataModels.Lots.LotList;
@@ -35,10 +36,12 @@ public interface SmartParkingAPI {
 
     /**SPOTS**/
     @POST("smartparking/spots/{spotId}/reset/")
-    Call<ResponseBody> resetFreeSpot(@Path("spotId") Integer spotId);
+    Call<ResponseBody> resetFreeSpot(@Path("spotId") Integer spotId,
+                                     @Body ApplicationInnformation applicationInnformation);
 
     @POST("smartparking/spots/{spotId}/set/")
-    Call<ResponseBody> setOccupiedSpot(@Path("spotId") Integer spotId);
+    Call<ResponseBody> setOccupiedSpot(@Path("spotId") Integer spotId,
+                                       @Body ApplicationInnformation applicationInnformation);
 
     @POST("smartparking/spots/nearby/")
     Call<HashMap<String, String>> getMapNearbySpots(@Body NearbyLocation nearbyLocation);
