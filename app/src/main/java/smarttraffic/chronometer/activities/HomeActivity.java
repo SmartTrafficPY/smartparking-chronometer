@@ -674,6 +674,8 @@ public class HomeActivity extends AppCompatActivity {
                             Utils.setNewStateOnSpot(HomeActivity.this, true, spotIdIn);
                             final Timer geofencetimer = new Timer();
                             userNotResponse = false;
+                            chronometer.stop();
+                            chronometer.setBase(SystemClock.elapsedRealtime());
                             resetFlags(true);
                             geofencetimer.schedule(new TimerTask() {
                                 public void run() {
@@ -699,6 +701,8 @@ public class HomeActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             Utils.setNewStateOnSpot(HomeActivity.this, isParking, spotIdIn);
                             userNotResponse = false;
+                            chronometer.stop();
+                            chronometer.setBase(SystemClock.elapsedRealtime());
                             resetFlags(true);
                             List<String> geofencesToRemove = new ArrayList<>();
                             geofencesToRemove.add("Tu vehiculo en " + spotIdIn);
@@ -716,6 +720,8 @@ public class HomeActivity extends AppCompatActivity {
                                     getGeofencePendingIntent());
                         }
                     }, Constants.getMinutesInMilliseconds() * 5);
+                    chronometer.stop();
+                    chronometer.setBase(SystemClock.elapsedRealtime());
                     Intent serviceIntent = new Intent(HomeActivity.this,
                             LocationUpdatesService.class);
                     stopService(serviceIntent);
