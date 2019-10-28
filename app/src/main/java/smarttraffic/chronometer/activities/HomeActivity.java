@@ -214,10 +214,10 @@ public class HomeActivity extends AppCompatActivity {
         };
         switch (geofenceTransition) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
+                startLocationService();
                 handler.postDelayed(cronJob, delay);
                 requestActivityUpdates();
                 chronometer.start();
-                startLocationService();
                 break;
             case Geofence.GEOFENCE_TRANSITION_EXIT:
                 if(Utils.returnEnterLotFlag(this)){
