@@ -42,6 +42,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import smarttraffic.chronometer.Interceptors.AddUserTokenInterceptor;
+import smarttraffic.chronometer.dataModels.AppToken;
 import smarttraffic.chronometer.dataModels.EventProperties;
 import smarttraffic.chronometer.dataModels.Events;
 import smarttraffic.chronometer.dataModels.Lots.Lot;
@@ -49,6 +50,7 @@ import smarttraffic.chronometer.dataModels.Lots.LotList;
 import smarttraffic.chronometer.dataModels.Lots.PointGeometry;
 import smarttraffic.chronometer.dataModels.Point;
 import smarttraffic.chronometer.dataModels.Spots.Spot;
+import smarttraffic.chronometer.dataModels.TokenProperties;
 import smarttraffic.chronometer.receivers.AddAlarmReceiver;
 import smarttraffic.chronometer.receivers.RemoveAlarmReceiver;
 
@@ -104,6 +106,7 @@ public class Utils {
     }
 
     public static void setNewStateOnSpot(final Context context, boolean isParking, int spotId) {
+        AppToken appToken = new AppToken(new TokenProperties(SmartParkingInitialData.getToken()));
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -123,7 +126,7 @@ public class Utils {
 
         SmartParkingAPI smartParkingAPI = retrofit.create(SmartParkingAPI.class);
         if(isParking){
-            Call<ResponseBody> call = smartParkingAPI.setOccupiedSpot(spotId);
+            Call<ResponseBody> call = smartParkingAPI.setOccupiedSpot(spotId, appToken);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -143,7 +146,7 @@ public class Utils {
                 }
             });
         }else{
-            Call<ResponseBody> call = smartParkingAPI.resetFreeSpot(spotId);
+            Call<ResponseBody> call = smartParkingAPI.resetFreeSpot(spotId, appToken);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

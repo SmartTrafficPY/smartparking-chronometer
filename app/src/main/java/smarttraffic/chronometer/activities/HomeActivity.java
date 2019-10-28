@@ -117,7 +117,6 @@ public class HomeActivity extends AppCompatActivity {
     int activityTransition;
     int geofenceTransition;
     int confidence;
-    int delayResponse;
     boolean userNotResponse = true;
     boolean dialogSendAllready = false;
     private Location mCurrentLocation;
@@ -218,6 +217,7 @@ public class HomeActivity extends AppCompatActivity {
                 handler.postDelayed(cronJob, delay);
                 requestActivityUpdates();
                 chronometer.start();
+                startLocationService();
                 break;
             case Geofence.GEOFENCE_TRANSITION_EXIT:
                 if(Utils.returnEnterLotFlag(this)){
@@ -227,12 +227,14 @@ public class HomeActivity extends AppCompatActivity {
                 chronometer.stop();
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 handler.removeCallbacks(cronJob);
+                stopLocationService();
                 break;
             default:
                 chronometer.stop();
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 removeActivityUpdates();
                 handler.removeCallbacks(cronJob);
+                stopLocationService();
                 break;
         }
     }
@@ -360,6 +362,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        addParkingLotsGeofences();
         if(Utils.isDayOfWeek() && !Utils.getGeofenceStatus(HomeActivity.this)){
             addParkingLotsGeofences();
         }
@@ -940,6 +943,16 @@ public class HomeActivity extends AppCompatActivity {
                 dialogSendAllready = false;
             }
         }, positiveResponse ? Constants.getMinutesInMilliseconds() * 3 : Constants.getSecondsInMilliseconds() * 20);
+    }
+
+    public void startLocationService() {
+        Intent serviceIntent = new Intent(this, LocationUpdatesService.class);
+        startService(serviceIntent);
+    }
+
+    public void stopLocationService() {
+        Intent serviceIntent = new Intent(this, LocationUpdatesService.class);
+        stopService(serviceIntent);
     }
 
 }
