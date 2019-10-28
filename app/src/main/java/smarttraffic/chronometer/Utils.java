@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.media.session.MediaSession;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.util.Base64;
@@ -106,7 +107,10 @@ public class Utils {
     }
 
     public static void setNewStateOnSpot(final Context context, boolean isParking, int spotId) {
-        AppToken appToken = new AppToken(new TokenProperties(SmartParkingInitialData.getToken()));
+        TokenProperties tokenProperties = new TokenProperties(SmartParkingInitialData.getToken());
+        AppToken appToken = new AppToken();
+        appToken.setProperties(tokenProperties);
+        appToken.setType("Feature");
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -126,7 +130,8 @@ public class Utils {
 
         SmartParkingAPI smartParkingAPI = retrofit.create(SmartParkingAPI.class);
         if(isParking){
-            Call<ResponseBody> call = smartParkingAPI.setOccupiedSpot(spotId, appToken);
+            Call<ResponseBody> call = smartParkingAPI.setOccupiedSpot("application/vnd.geo+json",
+                    spotId, appToken);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -146,7 +151,8 @@ public class Utils {
                 }
             });
         }else{
-            Call<ResponseBody> call = smartParkingAPI.resetFreeSpot(spotId, appToken);
+            Call<ResponseBody> call = smartParkingAPI.resetFreeSpot("application/vnd.geo+json",
+                    spotId, appToken);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

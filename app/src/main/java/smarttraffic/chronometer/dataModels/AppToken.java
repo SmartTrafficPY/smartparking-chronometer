@@ -1,5 +1,7 @@
 package smarttraffic.chronometer.dataModels;
 
+import smarttraffic.chronometer.dataModels.Spots.PolygonGeometry;
+
 /**
  * Created by Joaquin on 10/2019.
  * <p>
@@ -7,12 +9,11 @@ package smarttraffic.chronometer.dataModels;
  */
 public class AppToken {
 
-    private final static String type = "Feature";
+    private String type;
     private TokenProperties properties;
-    private final static String geometry = null;
+    private PolygonGeometry geometry = null;
 
-    public AppToken(TokenProperties properties) {
-        this.properties = properties;
+    public AppToken() {
     }
 
     @Override
@@ -22,8 +23,12 @@ public class AppToken {
                 '}';
     }
 
-    public static String getType() {
+    public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public TokenProperties getProperties() {
@@ -34,7 +39,11 @@ public class AppToken {
         this.properties = properties;
     }
 
-    public static String getGeometry() {
+    public PolygonGeometry getGeometry() {
         return geometry;
+    }
+
+    public void setGeometry(PolygonGeometry geometry) {
+        this.geometry = geometry;
     }
 }
