@@ -347,7 +347,6 @@ public class Utils {
                 DateFormat.getDateTimeInstance().format(new Date()));
     }
 
-
     /**
      * Stores the location updates state in SharedPreferences.
      * @param requestingLocationUpdates The location updates state.
@@ -533,6 +532,4 @@ public class Utils {
         String strDate = sdfDate.format(today);
         return strDate;
     }
-
-
 }
