@@ -397,6 +397,7 @@ public class Utils {
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.HAS_ENTER_IN_LOT, flag).apply();
+        editor.putString(Constants.ENTER_LOT_TIMESTAMP, getCurrentTimeStamp()).apply();
         editor.commit();
     }
 
@@ -508,11 +509,10 @@ public class Utils {
     }
 
     private static boolean isTodayEnterTheLot(Context context){
-        String lastLotFlagUpdated;
         if(Utils.returnEnterLotFlag(context)){
             SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.ENTER_LOT_FLAG,
                     Context.MODE_PRIVATE);
-            lastLotFlagUpdated = sharedPreferences.getString(Constants.ENTER_LOT_TIMESTAMP, "");
+            String lastLotFlagUpdated = sharedPreferences.getString(Constants.ENTER_LOT_TIMESTAMP, "");
             if(lastLotFlagUpdated.equals("")){
                 return false;
             }else{
