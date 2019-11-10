@@ -4,10 +4,16 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationManager;
+import android.media.session.MediaSession;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -18,12 +24,15 @@ import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
+import com.google.maps.android.PolyUtil;
 
 import org.osmdroid.util.GeoPoint;
 
 import java.lang.reflect.Type;
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -41,6 +50,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import smarttraffic.chronometer.Interceptors.AddUserTokenInterceptor;
+import smarttraffic.chronometer.dataModels.AppToken;
 import smarttraffic.chronometer.dataModels.EventProperties;
 import smarttraffic.chronometer.dataModels.Events;
 import smarttraffic.chronometer.dataModels.Lots.Lot;
@@ -48,6 +58,7 @@ import smarttraffic.chronometer.dataModels.Lots.LotList;
 import smarttraffic.chronometer.dataModels.Lots.PointGeometry;
 import smarttraffic.chronometer.dataModels.Point;
 import smarttraffic.chronometer.dataModels.Spots.Spot;
+import smarttraffic.chronometer.dataModels.TokenProperties;
 import smarttraffic.chronometer.receivers.AddAlarmReceiver;
 import smarttraffic.chronometer.receivers.RemoveAlarmReceiver;
 
@@ -103,13 +114,17 @@ public class Utils {
     }
 
     public static void setNewStateOnSpot(final Context context, boolean isParking, int spotId) {
+        TokenProperties tokenProperties = new TokenProperties(SmartParkingInitialData.getToken());
+        AppToken appToken = new AppToken();
+        appToken.setProperties(tokenProperties);
+        appToken.setType("Feature");
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new AddUserTokenInterceptor(context))
                 .build();
@@ -122,7 +137,8 @@ public class Utils {
 
         SmartParkingAPI smartParkingAPI = retrofit.create(SmartParkingAPI.class);
         if(isParking){
-            Call<ResponseBody> call = smartParkingAPI.setOccupiedSpot(spotId);
+            Call<ResponseBody> call = smartParkingAPI.setOccupiedSpot("application/vnd.geo+json",
+                    spotId, appToken);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -142,7 +158,8 @@ public class Utils {
                 }
             });
         }else{
-            Call<ResponseBody> call = smartParkingAPI.resetFreeSpot(spotId);
+            Call<ResponseBody> call = smartParkingAPI.resetFreeSpot("application/vnd.geo+json",
+                    spotId, appToken);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -186,8 +203,8 @@ public class Utils {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(new AddUserTokenInterceptor(context))
                 .build();
@@ -334,7 +351,6 @@ public class Utils {
                 DateFormat.getDateTimeInstance().format(new Date()));
     }
 
-
     /**
      * Stores the location updates state in SharedPreferences.
      * @param requestingLocationUpdates The location updates state.
@@ -384,6 +400,7 @@ public class Utils {
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.HAS_ENTER_IN_LOT, flag).apply();
+        editor.putString(Constants.ENTER_LOT_TIMESTAMP, getCurrentTimeStamp()).apply();
         editor.commit();
     }
 
@@ -450,16 +467,113 @@ public class Utils {
         return list;
     }
 
-    public static boolean isInternetAvailable() {
-        try {
-            InetAddress ipAddr = InetAddress.getByName("google.com");
-            //You can replace it with your name
-            return !ipAddr.equals("");
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        } catch (Exception e) {
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    public static void compareUncomingGateways(Context context, Location currentLocation,
+                                               List<List<LatLng>> lotsPolygons) {
+        if (lotsPolygons != null && !lotsPolygons.isEmpty()) {
+            for (List linkedTrees : lotsPolygons) {
+                compareToEntranceLot(context, currentLocation, toLatLngList(linkedTrees));
+            }
+        }
+    }
+
+    public static void compareToEntranceLot(Context context, Location location, List<LatLng> polygonEntrance) {
+        if(location != null && polygonEntrance != null) {
+            if (PolyUtil.containsLocation(location.getLatitude(), location.getLongitude(),
+                    polygonEntrance, true)) {
+                if (!Utils.isTodayEnterTheLot(context)) {
+                    Utils.setEntranceEvent(context, location, Constants.EVENT_TYPE_ENTRACE);
+                    Utils.hasEnterLotFlag(context, true);
+                }
+            } else {
+                if (Utils.isTodayEnterTheLot(context)) {
+                    Utils.setEntranceEvent(context, location, Constants.EVENT_TYPE_EXIT);
+                    Utils.hasEnterLotFlag(context, false);
+                }
+            }
+        }
+    }
+
+    public static List<LatLng> toLatLngList(List<LinkedTreeMap> linkedTrees) {
+        List<LatLng> listToReturn = new ArrayList<>();
+        if (linkedTrees != null && !linkedTrees.isEmpty()) {
+            for (LinkedTreeMap tree : linkedTrees) {
+                LatLng point = new LatLng(Double.valueOf(tree.get("latitude").toString()),
+                        Double.valueOf(tree.get("longitude").toString()));
+                listToReturn.add(point);
+            }
+        }
+        return listToReturn;
+    }
+
+    private static boolean isTodayEnterTheLot(Context context){
+        if(Utils.returnEnterLotFlag(context)){
+            SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.ENTER_LOT_FLAG,
+                    Context.MODE_PRIVATE);
+            String lastLotFlagUpdated = sharedPreferences.getString(Constants.ENTER_LOT_TIMESTAMP, "");
+            if(lastLotFlagUpdated.equals("")){
+                return false;
+            }else{
+                if(!(getCurrentTimeStamp().equals(lastLotFlagUpdated))){
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        }else{
             return false;
         }
     }
 
+    private static String getCurrentTimeStamp() {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = Calendar.getInstance().getTime();
+        String strDate = sdfDate.format(today);
+        return strDate;
+    }
 
+    public static void toLocationSourceSettings(Context context){
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+
+    public static boolean isGPSenabled(Context context){
+        LocationManager locationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public static void checkForGPS(Context context){
+        if(!isGPSenabled(context)){
+            showGPSDisabledAlertToUser(context);
+        }
+    }
+
+    private static void showGPSDisabledAlertToUser(final Context context){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage("Es necesario habilitar el GPS")
+                .setCancelable(false)
+                .setPositiveButton("Ir a ajustes",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                toLocationSourceSettings(context);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancelar",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        if(!isGPSenabled(context)){
+                            showGPSDisabledAlertToUser(context);
+                        }
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
 }
