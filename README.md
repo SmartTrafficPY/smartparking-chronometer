@@ -5,7 +5,7 @@
 # Smartparking-Chronometer: complementary tool to validate [SmartParking.](https://github.com/SmartTrafficPY/smartparking)
 
 <p align="center">
-  <a href="https://www.smarttraffic.com.py/SmartParking/"><img  src="https://github.com/SmartTrafficPY/smartparking-chronometer/blob/master/minSP.png" title="SmartParking: chronometer" alt="SmartParking: chronometer"></a>
+  <a href="https://www.smarttraffic.com.py/SmartParking/"><img  src="https://github.com/SmartTrafficPY/smartparking-chronometer/blob/master/miniChronometerIcon.png" title="SmartParking: chronometer" alt="SmartParking: chronometer"></a>
 </p>
 
 Repository corresponding to the development of the client part of the SmartParking tool, one of the case studies within the SmartTraffic project framework.
